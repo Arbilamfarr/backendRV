@@ -24,6 +24,12 @@ export class UsersController {
       return this.usersService.findAll(user);
   }
 
+  @Get("myuser")
+  @UseGuards(UserGuard)
+  findMyUser(@User() user:any) {
+      return user;
+  }
+
   @Get(":id")
   @UseGuards(UserGuard)
   findOne(@Param('id') id: number) {

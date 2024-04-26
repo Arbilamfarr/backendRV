@@ -20,13 +20,20 @@ export class RenduVousService {
   }
 
   async findAll(user:any) {
-    if (user.role==='admin')
+    if (user.role==='admin'){
       return await this.renduVousRepository.find()
-    if (user.role==='user'){
-     const rendez= await this.renduVousRepository.find({where:{ user:user}})
-     return{rendez,user}
-
     }
+      
+    if (user.role==='user'){
+     const rendezVous = await this.renduVousRepository.find({
+        where: { user: user },
+        relations: ['user', 'centre', 'creneau'] });
+      return rendezVous
+    }
+  }
+
+  async findByCentre(centreId:number) {
+      return await this.renduVousRepository.find({where: { centre: { id: centreId }},relations: ['user', 'centre', 'creneau']})  
   }
 
   async findOne(id: number) {
@@ -46,6 +53,13 @@ export class RenduVousService {
   async remove(id: number) {
     return await this.renduVousRepository.delete(id);
   }
+   async removeByUser(userId: number) {
+  const responses = await this.renduVousRepository.find({ where: { user: { id: userId } } });
+  if (responses.length > 0) {
+    await Promise.all(responses.map((res) => this.renduVousRepository.remove(res)));
+  }
+}
+
   updateRenduVous(renduVous:CreateRenduVousDto,updateRenduVous:UpdateRenduVousDto){
     renduVous.date=updateRenduVous.date?? renduVous.date;
     renduVous.etat=updateRenduVous.etat?? renduVous.etat;

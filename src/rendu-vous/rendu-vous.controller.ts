@@ -29,6 +29,12 @@ export class RenduVousController {
     return this.renduVousService.findOne(+id);
   }
 
+   @Get('centre/:centreId')
+  @UseGuards(UserGuard)
+  findByCentre(@Param('centreId') centreId: string) {
+    return this.renduVousService.findByCentre(+centreId);
+  }
+
   @Patch(':id')
   @UseGuards(UserGuard)
   update(@Param('id') id: string, @Body() updateRenduVousDto: UpdateRenduVousDto) {
@@ -39,5 +45,11 @@ export class RenduVousController {
   @UseGuards(UserGuard)
   remove(@Param('id') id: string) {
     return this.renduVousService.remove(+id);
+  }
+
+  @Delete('user/:userId')
+  @UseGuards(UserGuard)
+  removeByUser(@Param('userId') userId: string) {
+    return this.renduVousService.removeByUser(+userId);
   }
 }
